@@ -174,15 +174,6 @@ restaurant_graph.add_edge('Home', 'C', 7)
 
 """
 
-restaurant_graph.add_edge('A', 'B', 5)
-restaurant_graph.add_edge('A', 'C', 8)
-restaurant_graph.add_edge('A', 'D', 10)
-restaurant_graph.add_edge('B', 'C', 4)
-restaurant_graph.add_edge('B', 'D', 7)
-restaurant_graph.add_edge('C', 'D', 6)
-restaurant_graph.add_edge('Home', 'B', 5)
-restaurant_graph.add_edge('Home', 'C', 7)
-
 restaurant_graph.add_edge('Home', 'Gobar', 3500)
 restaurant_graph.add_edge('Home', 'Tombo Luwe', 400)
 restaurant_graph.add_edge('Home', 'J-One', 500)
