@@ -97,7 +97,53 @@ restaurant_graph.add_restaurant('D', {
     'Butter Crab': {"Price": 12000, "Ingredients": ["Crab", "Butter", "Garlic", "Herbs"]}
 })
 
-restaurant_graph.add_restaurant('Home', {})  # 'Home' with an empty menu
+restaurant_graph.add_restaurant('Tombo Luwe', {
+    
+})
+
+restaurant_graph.add_restaurant('Pakar Nasi Uduk', {
+    
+})
+
+restaurant_graph.add_restaurant('Penyetan Mbak Lis', {
+    
+})
+
+restaurant_graph.add_restaurant('Warung Kane', {
+    
+})
+
+restaurant_graph.add_restaurant('J-One', {
+    
+})
+
+restaurant_graph.add_restaurant('Warung Kampus', {
+    
+})
+
+restaurant_graph.add_restaurant('Deles', {
+    
+})
+
+restaurant_graph.add_restaurant('Gobar', {
+    
+})
+
+restaurant_graph.add_restaurant('KFC Mulyosari', {
+    
+})
+
+restaurant_graph.add_restaurant('Mie Ayam Nusantara', {
+    
+})
+
+restaurant_graph.add_restaurant('Geprek Joder Ka Dhani', {
+    
+})
+
+restaurant_graph.add_restaurant('Mie Gacoan Manyar', {
+    
+})
 
 # Add edges with specified distances    
 restaurant_graph.add_edge('A', 'B', 5)
@@ -108,6 +154,21 @@ restaurant_graph.add_edge('B', 'D', 7)
 restaurant_graph.add_edge('C', 'D', 6)
 restaurant_graph.add_edge('Home', 'B', 5)
 restaurant_graph.add_edge('Home', 'C', 7)
+
+restaurant_graph.add_edge('Home', 'Gobar', 3500)
+restaurant_graph.add_edge('Home', 'Tombo Luwe', 400)
+restaurant_graph.add_edge('Home', 'J-One', 500)
+restaurant_graph.add_edge('Home', 'Deles', 1500)
+restaurant_graph.add_edge('Home', 'Mie Gacoan Manyar', 3800)
+restaurant_graph.add_edge('J-One', 'Warung Kampus', 240)
+restaurant_graph.add_edge('Tombo Luwe', 'Pakar Nasi Uduk', 550)
+restaurant_graph.add_edge('Pakar Nasi Uduk', 'Penyetan Mbak Lis', 40)
+restaurant_graph.add_edge('Pakar Nasi Uduk', 'Warung Kane', 300)
+restaurant_graph.add_edge('Warung Kane', 'Gobar', 2700)
+restaurant_graph.add_edge('Pakar Nasi Uduk', 'Gobar', 2800)
+restaurant_graph.add_edge('Gobar', 'KFC Mulyosari', 1200)
+restaurant_graph.add_edge('Gobar', 'Mie Gacoan Manyar', 4000)
+restaurant_graph.add_edge('Mie Gacoan Manyar', 'G', )
 
 # Display menus from restaurants that do not contain the specified ingredients to avoid
 avoid_ingredients = ['Cucumber', 'Cheese']
