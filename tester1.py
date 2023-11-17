@@ -55,10 +55,16 @@ class RestaurantGraph:
 
                 # Display the distance using A*
                 try:
-                    shortest_path = nx.astar_path(self.graph, source='Home', target=restaurant, heuristic=None, weight='weight')
-                    shortest_distance = nx.astar_path_length(self.graph, source='Home', target=restaurant, heuristic=None, weight='weight')
-                    text_widget.insert(tk.END, f"Shortest path from Home to {restaurant} using A*: {shortest_path}\n")
+                    shortest_path = nx.astar_path(self.graph, source=restaurant, target='Home', heuristic=heuristic, weight='weight')
+                    shortest_distance = nx.astar_path_length(self.graph, source=restaurant, target='Home', heuristic=heuristic, weight='weight')
+                    reversed_shortest_path = shortest_path[::-1]
+                    text_widget.insert(tk.END, f"Shortest path from Home to {restaurant} using A*: {reversed_shortest_path}\n")
                     text_widget.insert(tk.END, f"Shortest distance: {shortest_distance}\n\n")
+                    
+                    
+                    if not filtered_restaurants:
+                        text_widget.insert(tk.END, "No restaurants found.\n\n")
+                        
                 except nx.NetworkXNoPath:
                     text_widget.insert(tk.END, f"No path from Home to {restaurant}\n\n")
 
@@ -76,6 +82,10 @@ class RestaurantGraph:
 restaurant_graph = RestaurantGraph()
 
 # Add restaurants to the graph with updated menu representation
+
+"""
+INI DI DALAM COMMENT
+
 restaurant_graph.add_restaurant('A', {
     'Burger': {"Price": 5000, "Ingredients": ["Meat", "Bread", "Lettuce", "Cucumber"]},
     'Pizza': {"Price": 6000, "Ingredients": ["Dough", "Tomato Sauce", "Cheese", "Pepperoni"]},
@@ -97,55 +107,73 @@ restaurant_graph.add_restaurant('D', {
     'Butter Crab': {"Price": 12000, "Ingredients": ["Crab", "Butter", "Garlic", "Herbs"]}
 })
 
+"""
+
 restaurant_graph.add_restaurant('Tombo Luwe', {
-    
+    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]}
 })
 
 restaurant_graph.add_restaurant('Pakar Nasi Uduk', {
-    
+    'Nasi Uduk': {"Price": 10000, "Ingredients": ["Rice", "Coconut Milk", "Spices"]}
 })
 
 restaurant_graph.add_restaurant('Penyetan Mbak Lis', {
-    
+    'Ayam Penyet': {"Price": 15000, "Ingredients": ["Chicken", "Spices"]}
 })
 
 restaurant_graph.add_restaurant('Warung Kane', {
-    
+    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]}
 })
 
 restaurant_graph.add_restaurant('J-One', {
-    
+    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]}
 })
 
 restaurant_graph.add_restaurant('Warung Kampus', {
-    
+    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]}
 })
 
 restaurant_graph.add_restaurant('Deles', {
-    
+    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]}
 })
 
 restaurant_graph.add_restaurant('Gobar', {
-    
+    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]}
 })
 
 restaurant_graph.add_restaurant('KFC Mulyosari', {
-    
+    'Ayam Goreng': {"Price": 15000, "Ingredients": ["Chicken", "Spices"]},
 })
 
 restaurant_graph.add_restaurant('Mie Ayam Nusantara', {
-    
+    'Mie Ayam': {"Price": 10000, "Ingredients": ["Noodle", "Chicken", "Vegetables"]},
 })
 
 restaurant_graph.add_restaurant('Geprek Joder Ka Dhani', {
-    
+    'Ayam Geprek': {"Price": 15000, "Ingredients": ["Chicken", "Spices"]},
 })
 
 restaurant_graph.add_restaurant('Mie Gacoan Manyar', {
-    
+    'Mie Ayam': {"Price": 10000, "Ingredients": ["Noodle", "Chicken", "Vegetables"]},
 })
 
 # Add edges with specified distances    
+
+"""
+INI DI DALAM COMMENT
+
+restaurant_graph.add_edge('A', 'B', 5)
+restaurant_graph.add_edge('A', 'C', 8)
+restaurant_graph.add_edge('A', 'D', 10)
+restaurant_graph.add_edge('B', 'C', 4)
+restaurant_graph.add_edge('B', 'D', 7)
+restaurant_graph.add_edge('C', 'D', 6)
+restaurant_graph.add_edge('Home', 'B', 5)
+restaurant_graph.add_edge('Home', 'C', 7)
+
+
+"""
+
 restaurant_graph.add_edge('A', 'B', 5)
 restaurant_graph.add_edge('A', 'C', 8)
 restaurant_graph.add_edge('A', 'D', 10)
@@ -159,6 +187,7 @@ restaurant_graph.add_edge('Home', 'Gobar', 3500)
 restaurant_graph.add_edge('Home', 'Tombo Luwe', 400)
 restaurant_graph.add_edge('Home', 'J-One', 500)
 restaurant_graph.add_edge('Home', 'Deles', 1500)
+restaurant_graph.add_edge('Home', 'Mie Ayam Nusantara', 1900)
 restaurant_graph.add_edge('Home', 'Mie Gacoan Manyar', 3800)
 restaurant_graph.add_edge('J-One', 'Warung Kampus', 240)
 restaurant_graph.add_edge('Tombo Luwe', 'Pakar Nasi Uduk', 550)
@@ -168,10 +197,42 @@ restaurant_graph.add_edge('Warung Kane', 'Gobar', 2700)
 restaurant_graph.add_edge('Pakar Nasi Uduk', 'Gobar', 2800)
 restaurant_graph.add_edge('Gobar', 'KFC Mulyosari', 1200)
 restaurant_graph.add_edge('Gobar', 'Mie Gacoan Manyar', 4000)
-restaurant_graph.add_edge('Mie Gacoan Manyar', 'G', )
+restaurant_graph.add_edge('Mie Gacoan Manyar', 'Geprek Joder Ka Dhani', 2000)
+restaurant_graph.add_edge('Geprek Joder Ka Dhani', 'Mie Ayam Nusantara', 130)
+restaurant_graph.add_edge('Geprek Joder Ka Dhani', 'Deles', 1200)
+
+def heuristic(node1, node2):
+    match node1:
+        case 'Tombo Luwe':
+            return 162
+        case 'Pakar Nasi Uduk':
+            return 603
+        case 'Penyetan Mbak Lis':
+            return 610
+        case 'Warung Kane':
+            return 519
+        case 'J-One':
+            return 288
+        case 'Warung Kampus':
+            return 404
+        case 'Deles':
+            return 1493
+        case 'Gobar':
+            return 2051
+        case 'KFC Mulyosari':
+            return 2477
+        case 'Mie Ayam Nusantara':
+            return 1310
+        case 'Geprek Joder Ka Dhani':
+            return 1359
+        case 'Mie Gacoan Manyar':
+            return 2903
+        case 'Home':
+            return 0
+
 
 # Display menus from restaurants that do not contain the specified ingredients to avoid
-avoid_ingredients = ['Cucumber', 'Cheese']
+avoid_ingredients = []
 restaurant_graph.display_filtered_menus(avoid_ingredients)
 
 # Draw the graph using Matplotlib
