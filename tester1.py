@@ -110,51 +110,76 @@ restaurant_graph.add_restaurant('D', {
 """
 
 restaurant_graph.add_restaurant('Tombo Luwe', {
-    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]}
+    'Tahu Bacem': {"Price": 13000, "Ingredients": ["Fried Tofu", "Palm Sugar", "Coriander", "Galangal"]},
+    'Tempe Bacem': {"Price": 14000, "Ingredients": ["Fried Tempe", "Palm Sugar", "Coriander", "Galangal"]},
+    'Eggplant Dish': {"Price": 15000, "Ingredients": ["Eggplant", "Garlic", "Soy Sauce", "Chili"]},
+    'Urap': {"Price": 14000, "Ingredients": ["Vegetables", "Grated Coconut", "Spices", "Lime Leaves"]}
 })
 
 restaurant_graph.add_restaurant('Pakar Nasi Uduk', {
-    'Nasi Uduk': {"Price": 10000, "Ingredients": ["Rice", "Coconut Milk", "Spices"]}
+    'Nasi Uduk': {"Price": 10000, "Ingredients": ["Rice", "Coconut Milk", "Spices"]},
+    'Tempe Penyet': {"Price": 12000, "Ingredients": ["Fried Tempe", "Spices", "Sambal", "Cucumber"]},
+    'Ayam Goreng': {"Price": 16000, "Ingredients": ["Fried Chicken", "Spices", "Lime Leaves", "Sweet Soy Sauce"]}
 })
 
 restaurant_graph.add_restaurant('Penyetan Mbak Lis', {
-    'Ayam Penyet': {"Price": 15000, "Ingredients": ["Chicken", "Spices"]}
+    'Ayam Penyet': {"Price": 15000, "Ingredients": ["Chicken", "Spices"]},
+    'Grilled Chicken': {"Price": 18000, "Ingredients": ["Chicken", "Lemon", "Herbs"]},
+    'Grilled Egg': {"Price": 12000, "Ingredients": ["Egg", "Salt", "Pepper", "Herbs"]}
 })
 
 restaurant_graph.add_restaurant('Warung Kane', {
-    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]}
+    'Pizza Mie': {"Price": 17000, "Ingredients": ["Instant Noodles", "Tomato Sauce", "Cheese", "Toppings"]},
+    'Bandeng Presto': {"Price": 20000, "Ingredients": ["Milkfish", "Spices", "Coconut Milk", "Turmeric"]},
+    'Ayam Katsu': {"Price": 18000, "Ingredients": ["Chicken", "Bread Crumbs", "Egg", "Cabbage"]}
+
 })
 
 restaurant_graph.add_restaurant('J-One', {
-    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]}
+    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]},
+    'Sambal Goreng Ati': {"Price": 16000, "Ingredients": ["Chicken Liver", "Chili", "Coconut Milk"]},
+    'Omelette': {"Price": 12000, "Ingredients": ["Eggs", "Milk", "Cheese", "Vegetables"]}
 })
 
 restaurant_graph.add_restaurant('Warung Kampus', {
-    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]}
+    'Grilled Sausages': {"Price": 16000, "Ingredients": ["Sausages", "Mustard", "Ketchup", "Herbs"]},
+    'Katsu Ikan': {"Price": 16000, "Ingredients": ["Fish Fillet", "Bread Crumbs", "Egg", "Cabbage"]},
+    'Tahu Petis': {"Price": 14000, "Ingredients": ["Tofu", "Shrimp Paste", "Palm Sugar", "Chilies"]},
+    'Ayam Rempah': {"Price": 17000, "Ingredients": ["Chicken", "Spices", "Coconut Milk", "Lime Leaves"]}
 })
 
 restaurant_graph.add_restaurant('Deles', {
-    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]}
+    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]},
+    'Sate Ayam': {"Price": 15000, "Ingredients": ["Chicken", "Soy Sauce", "Peanut Sauce", "Cucumber"]},
+    'Siomay': {"Price": 17000, "Ingredients": ["Fish", "Shrimp", "Tofu", "Peanut Sauce"]},
+    'Soto Ayam': {"Price": 14000, "Ingredients": ["Chicken", "Turmeric", "Lime Leaves", "Rice Noodle"]}
 })
 
 restaurant_graph.add_restaurant('Gobar', {
-    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]}
+    'Gurame Bakar': {"Price": 25000, "Ingredients": ["Gurame Fish", "Spices", "Sweet Soy Sauce", "Lime"]},
+    'Patin Bakar': {"Price": 19000, "Ingredients": ["Patin Fish", "Spices", "Sweet Soy Sauce", "Lime"]},
+    'Lele Bakar': {"Price": 13000, "Ingredients": ["Catfish", "Spices", "Sweet Soy Sauce", "Lime"]}
 })
 
 restaurant_graph.add_restaurant('KFC Mulyosari', {
-    'Ayam Goreng': {"Price": 15000, "Ingredients": ["Chicken", "Spices"]},
+    'Hot Wings': {"Price": 15000, "Ingredients": ["Chicken Wings", "Hot Sauce", "Butter", "Celery"]},
+    'Chicken Popcorn': {"Price": 16000, "Ingredients": ["Chicken", "Flour", "Spices"]},
+    'Chicken Strips': {"Price": 17000, "Ingredients": ["Chicken", "Flour", "Spices"]},
+    'Chicken Burger': {"Price": 18000, "Ingredients": ["Chicken", "Bread", "Lettuce", "Tomato"]},
+    'Extra Crispy Chicken': {"Price": 17000, "Ingredients": ["Chicken", "Crispy Coating", "Spices", "Dipping Sauce"]}
 })
 
 restaurant_graph.add_restaurant('Mie Ayam Nusantara', {
-    'Mie Ayam': {"Price": 10000, "Ingredients": ["Noodle", "Chicken", "Vegetables"]},
+    'Mie Ayam': {"Price": 12000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Soy Sauce"]}
 })
 
 restaurant_graph.add_restaurant('Geprek Joder Ka Dhani', {
-    'Ayam Geprek': {"Price": 15000, "Ingredients": ["Chicken", "Spices"]},
+    'Ayam Geprek': {"Price": 16000, "Ingredients": ["Fried Chicken", "Chili Paste", "Tomato", "Spices"]},
+    'Cumi Geprek': {"Price": 17000, "Ingredients": ["Fried Calamari", "Chili Paste", "Tomato", "Spices"]}
 })
 
 restaurant_graph.add_restaurant('Mie Gacoan Manyar', {
-    'Mie Ayam': {"Price": 10000, "Ingredients": ["Noodle", "Chicken", "Vegetables"]},
+    'Mie Hompimpa': {"Price": 16000, "Ingredients": ["Egg Noodles", "Shredded Chicken", "Vegetables", "Special Sauce"]}
 })
 
 # Add edges with specified distances    
