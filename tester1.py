@@ -249,7 +249,7 @@ def heuristic(node1, node2):
 
 # Display menus from restaurants that do not contain the specified ingredients to avoid
 # Add ingredients to avoid
-avoid_ingredients = ['Fish', 'Cheese', 'Soy Sauce', 'Coconut Milk']
+avoid_ingredients = ['Fish', 'Peanut', 'Soy Sauce', 'Coconut Milk']
 restaurant_graph.display_filtered_menus(avoid_ingredients)
 
 # Draw the graph using Matplotlib
