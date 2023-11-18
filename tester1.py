@@ -110,8 +110,8 @@ restaurant_graph.add_restaurant('D', {
 """
 
 restaurant_graph.add_restaurant('Tombo Luwe', {
-    'Tahu Bacem': {"Price": 13000, "Ingredients": ["Fried Tofu", "Palm Sugar", "Coriander", "Galangal"]},
-    'Tempe Bacem': {"Price": 14000, "Ingredients": ["Fried Tempe", "Palm Sugar", "Coriander", "Galangal"]},
+    'Tahu Bacem': {"Price": 13000, "Ingredients": ["Tofu", "Palm Sugar", "Coriander", "Galangal"]},
+    'Tempe Bacem': {"Price": 14000, "Ingredients": ["Tempe", "Palm Sugar", "Coriander", "Galangal"]},
     'Eggplant Dish': {"Price": 15000, "Ingredients": ["Eggplant", "Garlic", "Soy Sauce", "Chili"]},
     'Urap': {"Price": 14000, "Ingredients": ["Vegetables", "Grated Coconut", "Spices", "Lime Leaves"]}
 })
@@ -156,9 +156,9 @@ restaurant_graph.add_restaurant('Deles', {
 })
 
 restaurant_graph.add_restaurant('Gobar', {
-    'Gurame Bakar': {"Price": 25000, "Ingredients": ["Gurame Fish", "Spices", "Sweet Soy Sauce", "Lime"]},
-    'Patin Bakar': {"Price": 19000, "Ingredients": ["Patin Fish", "Spices", "Sweet Soy Sauce", "Lime"]},
-    'Lele Bakar': {"Price": 13000, "Ingredients": ["Catfish", "Spices", "Sweet Soy Sauce", "Lime"]}
+    'Gurame Bakar': {"Price": 25000, "Ingredients": ["Fish", "Gurame Fish", "Spices", "Sweet Soy Sauce", "Lime"]},
+    'Patin Bakar': {"Price": 19000, "Ingredients": ["Fish","Patin Fish", "Spices", "Sweet Soy Sauce", "Lime"]},
+    'Lele Bakar': {"Price": 13000, "Ingredients": ["Fish","Catfish", "Spices", "Sweet Soy Sauce", "Lime"]}
 })
 
 restaurant_graph.add_restaurant('KFC Mulyosari', {
@@ -248,7 +248,8 @@ def heuristic(node1, node2):
 
 
 # Display menus from restaurants that do not contain the specified ingredients to avoid
-avoid_ingredients = []
+# Add ingredients to avoid
+avoid_ingredients = ['Fish', 'Cheese', 'Soy Sauce', 'Coconut Milk']
 restaurant_graph.display_filtered_menus(avoid_ingredients)
 
 # Draw the graph using Matplotlib
