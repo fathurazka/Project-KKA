@@ -119,7 +119,7 @@ restaurant_graph.add_restaurant('Tombo Luwe', {
 restaurant_graph.add_restaurant('Pakar Nasi Uduk', {
     'Nasi Uduk': {"Price": 10000, "Ingredients": ["Rice", "Coconut Milk", "Spices"]},
     'Tempe Penyet': {"Price": 12000, "Ingredients": ["Fried Tempe", "Spices", "Sambal", "Cucumber"]},
-    'Ayam Goreng': {"Price": 16000, "Ingredients": ["Fried Chicken", "Spices", "Lime Leaves", "Sweet Soy Sauce"]}
+    'Ayam Goreng': {"Price": 16000, "Ingredients": ["Chicken", "Spices", "Lime Leaves", "Sweet Soy Sauce"]}
 })
 
 restaurant_graph.add_restaurant('Penyetan Mbak Lis', {
@@ -162,7 +162,7 @@ restaurant_graph.add_restaurant('Gobar', {
 })
 
 restaurant_graph.add_restaurant('KFC Mulyosari', {
-    'Hot Wings': {"Price": 15000, "Ingredients": ["Chicken Wings", "Hot Sauce", "Butter", "Celery"]},
+    'Hot Wings': {"Price": 15000, "Ingredients": ["Chicken", "Hot Sauce", "Butter", "Celery"]},
     'Chicken Popcorn': {"Price": 16000, "Ingredients": ["Chicken", "Flour", "Spices"]},
     'Chicken Strips': {"Price": 17000, "Ingredients": ["Chicken", "Flour", "Spices"]},
     'Chicken Burger': {"Price": 18000, "Ingredients": ["Chicken", "Bread", "Lettuce", "Tomato"]},
@@ -174,12 +174,12 @@ restaurant_graph.add_restaurant('Mie Ayam Nusantara', {
 })
 
 restaurant_graph.add_restaurant('Geprek Joder Ka Dhani', {
-    'Ayam Geprek': {"Price": 16000, "Ingredients": ["Fried Chicken", "Chili Paste", "Tomato", "Spices"]},
-    'Cumi Geprek': {"Price": 17000, "Ingredients": ["Fried Calamari", "Chili Paste", "Tomato", "Spices"]}
+    'Ayam Geprek': {"Price": 16000, "Ingredients": ["Chicken", "Chili Paste", "Tomato", "Spices"]},
+    'Cumi Geprek': {"Price": 17000, "Ingredients": ["Calamari", "Chili Paste", "Tomato", "Spices"]}
 })
 
 restaurant_graph.add_restaurant('Mie Gacoan Manyar', {
-    'Mie Hompimpa': {"Price": 16000, "Ingredients": ["Egg Noodles", "Shredded Chicken", "Vegetables", "Special Sauce"]}
+    'Mie Hompimpa': {"Price": 16000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Special Sauce"]}
 })
 
 # Add edges with specified distances    
