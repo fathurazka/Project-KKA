@@ -1,7 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import tkinter as tk
-from tkinter import scrolledtext
+from tkinter import scrolledtext, Entry, Button, Label
 
 class RestaurantGraph:
     def __init__(self):
@@ -25,8 +25,6 @@ class RestaurantGraph:
         return filtered_restaurants
 
     def display_filtered_menus(self, avoid_ingredients):
-        filtered_restaurants = self.filter_restaurants(avoid_ingredients)
-
         # Create a tkinter window
         root = tk.Tk()
         root.title("Filtered Menus")
@@ -34,39 +32,51 @@ class RestaurantGraph:
         # Make the window resizable
         root.resizable(width=True, height=True)
 
+        # Create a label and entry widget for user input
+        label = Label(root, text="Enter ingredients to avoid (comma-separated):")
+        label.pack()
+        avoid_ingredients_entry = Entry(root)
+        avoid_ingredients_entry.pack()
+
         # Create a scrolled text widget
         text_widget = scrolledtext.ScrolledText(root, width=40, height=20)
         text_widget.pack(fill=tk.BOTH, expand=True)
 
-        for restaurant in filtered_restaurants:
-            menu = self.graph.nodes[restaurant].get('menu', {})
-            filtered_dishes = []
+        def display_menus():
+            nonlocal text_widget
+            text_widget.delete(1.0, tk.END)  # Clear previous content
+            avoid_ingredients = avoid_ingredients_entry.get().split(', ')
+            filtered_restaurants = self.filter_restaurants(avoid_ingredients)
 
-            for dish, dish_info in menu.items():
-                dish_ingredients = dish_info.get('Ingredients', [])
-                if not any(ingredient in avoid_ingredients for ingredient in dish_ingredients):
-                    filtered_dishes.append((dish, dish_info))
+            for restaurant in filtered_restaurants:
+                menu = self.graph.nodes[restaurant].get('menu', {})
+                filtered_dishes = []
 
-            if filtered_dishes:
-                text_widget.insert(tk.END, f"Restaurant {restaurant} Menu:\n")
-                for dish, dish_info in filtered_dishes:
-                    price = dish_info.get('Price', 'N/A')
-                    text_widget.insert(tk.END, f"  {dish}, Price: {price}\n")
+                for dish, dish_info in menu.items():
+                    dish_ingredients = dish_info.get('Ingredients', [])
+                    if not any(ingredient in avoid_ingredients for ingredient in dish_ingredients):
+                        filtered_dishes.append((dish, dish_info))
 
-                # Display the distance using A*
-                try:
-                    shortest_path = nx.astar_path(self.graph, source=restaurant, target='Home', heuristic=heuristic, weight='weight')
-                    shortest_distance = nx.astar_path_length(self.graph, source=restaurant, target='Home', heuristic=heuristic, weight='weight')
-                    reversed_shortest_path = shortest_path[::-1]
-                    text_widget.insert(tk.END, f"Shortest path from Home to {restaurant} using A*: {reversed_shortest_path}\n")
-                    text_widget.insert(tk.END, f"Shortest distance: {shortest_distance}\n\n")
-                    
-                    
-                    if not filtered_restaurants:
-                        text_widget.insert(tk.END, "No restaurants found.\n\n")
-                        
-                except nx.NetworkXNoPath:
-                    text_widget.insert(tk.END, f"No path from Home to {restaurant}\n\n")
+                if filtered_dishes:
+                    text_widget.insert(tk.END, f"Restaurant {restaurant} Menu:\n")
+                    for dish, dish_info in filtered_dishes:
+                        price = dish_info.get('Price', 'N/A')
+                        text_widget.insert(tk.END, f"  {dish}, Price: {price}\n")
+
+                    # Display the distance using A*
+                    try:
+                        shortest_path = nx.astar_path(self.graph, source=restaurant, target='Home', heuristic=heuristic, weight='weight')
+                        shortest_distance = nx.astar_path_length(self.graph, source=restaurant, target='Home', heuristic=heuristic, weight='weight')
+                        reversed_shortest_path = shortest_path[::-1]
+                        text_widget.insert(tk.END, f"Shortest path from Home to {restaurant} using A*: {reversed_shortest_path}\n")
+                        text_widget.insert(tk.END, f"Shortest distance: {shortest_distance}\n\n")
+
+                    except nx.NetworkXNoPath:
+                        text_widget.insert(tk.END, f"No path from Home to {restaurant}\n\n")
+
+        # Create a button to trigger the display
+        display_button = Button(root, text="Display Menus", command=display_menus)
+        display_button.pack()
 
         # Run the tkinter main loop
         root.mainloop()
