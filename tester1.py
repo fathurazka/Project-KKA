@@ -143,7 +143,7 @@ restaurant_graph.add_restaurant('J-One', {
 
 restaurant_graph.add_restaurant('Warung Kampus', {
     'Grilled Sausages': {"Price": 16000, "Ingredients": ["Sausages", "Mustard", "Ketchup", "Herbs"]},
-    'Katsu Ikan': {"Price": 16000, "Ingredients": ["Fish Fillet", "Bread Crumbs", "Egg", "Cabbage"]},
+    'Katsu Ikan': {"Price": 16000, "Ingredients": ["Fish", "Bread Crumbs", "Egg", "Cabbage"]},
     'Tahu Petis': {"Price": 14000, "Ingredients": ["Tofu", "Shrimp Paste", "Palm Sugar", "Chilies"]},
     'Ayam Rempah': {"Price": 17000, "Ingredients": ["Chicken", "Spices", "Coconut Milk", "Lime Leaves"]}
 })
