@@ -88,37 +88,9 @@ class RestaurantGraph:
         nx.draw_networkx_edge_labels(self.graph, pos, edge_labels=edge_labels)
         plt.show()
 
-# Example Usage:
 restaurant_graph = RestaurantGraph()
 
 # Add restaurants to the graph with updated menu representation
-
-"""
-INI DI DALAM COMMENT
-
-restaurant_graph.add_restaurant('A', {
-    'Burger': {"Price": 5000, "Ingredients": ["Meat", "Bread", "Lettuce", "Cucumber"]},
-    'Pizza': {"Price": 6000, "Ingredients": ["Dough", "Tomato Sauce", "Cheese", "Pepperoni"]},
-    'Pasta': {"Price": 7000, "Ingredients": ["Pasta", "Tomato Sauce", "Meat", "Cheese"]}
-})
-
-restaurant_graph.add_restaurant('B', {
-    'Fried Rice': {"Price": 4500, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]},
-    'Fried Noodle': {"Price": 4800, "Ingredients": ["Noodle", "Vegetables", "Chicken", "Soy Sauce"]}
-})
-
-restaurant_graph.add_restaurant('C', {
-    'Crispy Chicken': {"Price": 8000, "Ingredients": ["Chicken", "Flour", "Spices"]},
-    'Peking Duck': {"Price": 10000, "Ingredients": ["Duck", "Flour", "Hoisin Sauce", "Cucumber"]}
-})
-
-restaurant_graph.add_restaurant('D', {
-    'Grilled Fish': {"Price": 9000, "Ingredients": ["Fish", "Lemon", "Herbs", "Olive Oil"]},
-    'Butter Crab': {"Price": 12000, "Ingredients": ["Crab", "Butter", "Garlic", "Herbs"]}
-})
-
-"""
-
 restaurant_graph.add_restaurant('Tombo Luwe', {
     'Tahu Bacem': {"Price": 13000, "Ingredients": ["Tofu", "Palm Sugar", "Coriander", "Galangal"]},
     'Tempe Bacem': {"Price": 14000, "Ingredients": ["Tempe", "Palm Sugar", "Coriander", "Galangal"]},
@@ -194,21 +166,6 @@ restaurant_graph.add_restaurant('Mie Gacoan Manyar', {
 
 # Add edges with specified distances    
 
-"""
-INI DI DALAM COMMENT
-
-restaurant_graph.add_edge('A', 'B', 5)
-restaurant_graph.add_edge('A', 'C', 8)
-restaurant_graph.add_edge('A', 'D', 10)
-restaurant_graph.add_edge('B', 'C', 4)
-restaurant_graph.add_edge('B', 'D', 7)
-restaurant_graph.add_edge('C', 'D', 6)
-restaurant_graph.add_edge('Home', 'B', 5)
-restaurant_graph.add_edge('Home', 'C', 7)
-
-
-"""
-
 restaurant_graph.add_edge('Home', 'Gobar', 3500)
 restaurant_graph.add_edge('Home', 'Tombo Luwe', 400)
 restaurant_graph.add_edge('Home', 'J-One', 500)
@@ -259,7 +216,7 @@ def heuristic(node1, node2):
 
 # Display menus from restaurants that do not contain the specified ingredients to avoid
 # Add ingredients to avoid
-avoid_ingredients = ['Fish', 'Peanut', 'Soy Sauce', 'Coconut Milk']
+avoid_ingredients = []
 restaurant_graph.display_filtered_menus(avoid_ingredients)
 
 # Draw the graph using Matplotlib
