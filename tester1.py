@@ -1,11 +1,12 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import tkinter as tk
-from tkinter import scrolledtext, Entry, Button, Label
+from tkinter import scrolledtext, Entry, Button, Label, Checkbutton, IntVar
 
 class RestaurantGraph:
     def __init__(self):
         self.graph = nx.Graph()
+        self.avoided_ingredients = []  # Initialize with an empty list
 
     def add_restaurant(self, name, menu):
         self.graph.add_node(name, menu=menu)
@@ -13,18 +14,40 @@ class RestaurantGraph:
     def add_edge(self, restaurant1, restaurant2, distance):
         self.graph.add_edge(restaurant1, restaurant2, weight=distance)
 
-    def filter_restaurants(self, avoid_ingredients):
+    def set_diets(self, selected_diets):
+        # Define avoided ingredients based on the chosen diets
+        diets = {
+            'vegetarian': ['Meat', 'Seafood'],
+            'vegan': ["Animal Products"],
+            'pescatarian': ['Meat'],
+            'gluten-free': ['wheat', 'barley', 'rye'],
+            'lactose-free': ['milk', 'cheese', 'yogurt', 'butter', 'cream', 'dairy'],
+            'low-carb': ['rice', 'potatoes', 'bread', 'pasta'],
+            'nut-free': ['peanuts', 'almonds', 'cashews', 'walnuts'],
+            'keto': ['rice', 'potatoes', 'bread', 'pasta', 'sugar', 'fruits', 'legumes', 'grains'],
+        }
+
+        self.avoided_ingredients = []
+        for diet in selected_diets:
+            self.avoided_ingredients.extend(diets.get(diet, []))
+
+    def set_custom_avoided_ingredients(self, custom_ingredients):
+        # Split custom ingredients into a list and convert to lowercase
+        self.avoided_ingredients += [ingredient.strip().lower() for ingredient in custom_ingredients.split(',')]
+
+    def filter_restaurants(self):
         filtered_restaurants = []
         for restaurant in self.graph.nodes:
             menu = self.graph.nodes[restaurant].get('menu', {})
             menu_ingredients = menu.get('Ingredients', [])
 
-            if not any(ingredient in avoid_ingredients for ingredient in menu_ingredients):
+            # Check both diet-based and custom avoided ingredients
+            if not any(ingredient in self.avoided_ingredients for ingredient in map(str.lower, menu_ingredients)):
                 filtered_restaurants.append(restaurant)
 
         return filtered_restaurants
 
-    def display_filtered_menus(self, avoid_ingredients):
+    def display_filtered_menus(self):
         # Create a tkinter window
         root = tk.Tk()
         root.title("Filtered Menus")
@@ -32,11 +55,29 @@ class RestaurantGraph:
         # Make the window resizable
         root.resizable(width=True, height=True)
 
-        # Create a label and entry widget for user input
-        label = Label(root, text="Enter ingredients to avoid (comma-separated):")
-        label.pack()
-        avoid_ingredients_entry = Entry(root)
-        avoid_ingredients_entry.pack()
+        # Create checkboxes for diets
+        diet_checkboxes = {}
+        for diet in ['vegetarian', 'vegan', 'pescatarian', 'gluten-free', 'lactose-free', 'low-carb', 'nut-free', 'keto']:
+            var = IntVar()
+            checkbox = Checkbutton(root, text=diet, variable=var)
+            checkbox.pack()
+            diet_checkboxes[diet] = var
+
+        custom_label = Label(root, text="Enter custom avoided ingredients (comma-separated):")
+        custom_label.pack()
+        custom_entry = Entry(root)
+        custom_entry.pack()
+
+        def update_diets():
+            selected_diets = [diet for diet, var in diet_checkboxes.items() if var.get()]
+            self.set_diets(selected_diets)
+            custom_ingredients = custom_entry.get()
+            self.set_custom_avoided_ingredients(custom_ingredients)
+            display_menus()
+
+        # Create a button to trigger the diet update
+        update_button = Button(root, text="Update Diets", command=update_diets)
+        update_button.pack()
 
         # Create a scrolled text widget
         text_widget = scrolledtext.ScrolledText(root, width=40, height=20)
@@ -45,8 +86,7 @@ class RestaurantGraph:
         def display_menus():
             nonlocal text_widget
             text_widget.delete(1.0, tk.END)  # Clear previous content
-            avoid_ingredients = avoid_ingredients_entry.get().split(', ')
-            filtered_restaurants = self.filter_restaurants(avoid_ingredients)
+            filtered_restaurants = self.filter_restaurants()
 
             for restaurant in filtered_restaurants:
                 menu = self.graph.nodes[restaurant].get('menu', {})
@@ -54,7 +94,8 @@ class RestaurantGraph:
 
                 for dish, dish_info in menu.items():
                     dish_ingredients = dish_info.get('Ingredients', [])
-                    if not any(ingredient in avoid_ingredients for ingredient in dish_ingredients):
+                    # Check both diet-based and custom avoided ingredients
+                    if not any(ingredient in self.avoided_ingredients for ingredient in map(str.lower, dish_ingredients)):
                         filtered_dishes.append((dish, dish_info))
 
                 if filtered_dishes:
@@ -62,17 +103,6 @@ class RestaurantGraph:
                     for dish, dish_info in filtered_dishes:
                         price = dish_info.get('Price', 'N/A')
                         text_widget.insert(tk.END, f"  {dish}, Price: {price}\n")
-
-                    # Display the distance using A*
-                    try:
-                        shortest_path = nx.astar_path(self.graph, source=restaurant, target='Home', heuristic=heuristic, weight='weight')
-                        shortest_distance = nx.astar_path_length(self.graph, source=restaurant, target='Home', heuristic=heuristic, weight='weight')
-                        reversed_shortest_path = shortest_path[::-1]
-                        text_widget.insert(tk.END, f"Shortest path from Home to {restaurant} using A*: {reversed_shortest_path}\n")
-                        text_widget.insert(tk.END, f"Shortest distance: {shortest_distance}\n\n")
-
-                    except nx.NetworkXNoPath:
-                        text_widget.insert(tk.END, f"No path from Home to {restaurant}\n\n")
 
         # Create a button to trigger the display
         display_button = Button(root, text="Display Menus", command=display_menus)
@@ -88,6 +118,7 @@ class RestaurantGraph:
         nx.draw_networkx_edge_labels(self.graph, pos, edge_labels=edge_labels)
         plt.show()
 
+# Example Usage:
 restaurant_graph = RestaurantGraph()
 
 # Add restaurants to the graph with updated menu representation
@@ -95,73 +126,73 @@ restaurant_graph.add_restaurant('Tombo Luwe', {
     'Tahu Bacem': {"Price": 13000, "Ingredients": ["Tofu", "Palm Sugar", "Coriander", "Galangal"]},
     'Tempe Bacem': {"Price": 14000, "Ingredients": ["Tempe", "Palm Sugar", "Coriander", "Galangal"]},
     'Eggplant Dish': {"Price": 15000, "Ingredients": ["Eggplant", "Garlic", "Soy Sauce", "Chili"]},
-    'Urap': {"Price": 14000, "Ingredients": ["Vegetables", "Grated Coconut", "Spices", "Lime Leaves"]}
+    'Urap': {"Price": 14000, "Ingredients": ["Vegetables", "Coconut", "Spices", "Lime Leaves"]}
 })
 
 restaurant_graph.add_restaurant('Pakar Nasi Uduk', {
     'Nasi Uduk': {"Price": 10000, "Ingredients": ["Rice", "Coconut Milk", "Spices"]},
     'Tempe Penyet': {"Price": 12000, "Ingredients": ["Fried Tempe", "Spices", "Sambal", "Cucumber"]},
-    'Ayam Goreng': {"Price": 16000, "Ingredients": ["Chicken", "Spices", "Lime Leaves", "Sweet Soy Sauce"]}
+    'Ayam Goreng': {"Price": 16000, "Ingredients": ["Chicken", "Spices", "Lime Leaves", "Sweet Soy Sauce", "Meat", "Animal Products"]}
 })
 
 restaurant_graph.add_restaurant('Penyetan Mbak Lis', {
-    'Ayam Penyet': {"Price": 15000, "Ingredients": ["Chicken", "Spices"]},
-    'Grilled Chicken': {"Price": 18000, "Ingredients": ["Chicken", "Lemon", "Herbs"]},
-    'Grilled Egg': {"Price": 12000, "Ingredients": ["Egg", "Salt", "Pepper", "Herbs"]}
+    'Ayam Penyet': {"Price": 15000, "Ingredients": ["Chicken", "Spices", "Meat", "Animal Products"]},
+    'Grilled Chicken': {"Price": 18000, "Ingredients": ["Chicken", "Lemon", "Herbs", "Meat", "Animal Products"]},
+    'Grilled Egg': {"Price": 12000, "Ingredients": ["Egg", "Salt", "Pepper", "Herbs", "Animal Products"]}
 })
 
 restaurant_graph.add_restaurant('Warung Kane', {
-    'Pizza Mie': {"Price": 17000, "Ingredients": ["Instant Noodles", "Tomato Sauce", "Cheese", "Toppings"]},
-    'Bandeng Presto': {"Price": 20000, "Ingredients": ["Milkfish", "Spices", "Coconut Milk", "Turmeric"]},
-    'Ayam Katsu': {"Price": 18000, "Ingredients": ["Chicken", "Bread Crumbs", "Egg", "Cabbage"]}
+    'Pizza Mie': {"Price": 17000, "Ingredients": ["Instant Noodles", "Tomato Sauce", "Cheese", "Toppings", "Dairy", "Animal Products"]},
+    'Bandeng Presto': {"Price": 20000, "Ingredients": ["Milkfish", "Spices", "Coconut Milk", "Turmeric", "Seafood", "Animal Products"]},
+    'Ayam Katsu': {"Price": 18000, "Ingredients": ["Chicken", "Bread Crumbs", "Egg", "Cabbage", "Meat", "Animal Products"]}
 
 })
 
 restaurant_graph.add_restaurant('J-One', {
-    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]},
-    'Sambal Goreng Ati': {"Price": 16000, "Ingredients": ["Chicken Liver", "Chili", "Coconut Milk"]},
-    'Omelette': {"Price": 12000, "Ingredients": ["Eggs", "Milk", "Cheese", "Vegetables"]}
+    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce", "Animal Products"]},
+    'Sambal Goreng Ati': {"Price": 16000, "Ingredients": ["Chicken Liver", "Chili", "Coconut Milk", "Meat", "Animal Products"]},
+    'Omelette': {"Price": 12000, "Ingredients": ["Eggs", "Milk", "Cheese", "Vegetables", "Animal Products", "Dairy"]}
 })
 
 restaurant_graph.add_restaurant('Warung Kampus', {
-    'Grilled Sausages': {"Price": 16000, "Ingredients": ["Sausages", "Mustard", "Ketchup", "Herbs"]},
-    'Katsu Ikan': {"Price": 16000, "Ingredients": ["Fish", "Bread Crumbs", "Egg", "Cabbage"]},
+    'Grilled Sausages': {"Price": 16000, "Ingredients": ["Sausages", "Mustard", "Ketchup", "Herbs", "Meat", "Animal Products"]},
+    'Katsu Ikan': {"Price": 16000, "Ingredients": ["Fish", "Bread Crumbs", "Egg", "Cabbage", "Seafood", "Animal Products"]},
     'Tahu Petis': {"Price": 14000, "Ingredients": ["Tofu", "Shrimp Paste", "Palm Sugar", "Chilies"]},
-    'Ayam Rempah': {"Price": 17000, "Ingredients": ["Chicken", "Spices", "Coconut Milk", "Lime Leaves"]}
+    'Ayam Rempah': {"Price": 17000, "Ingredients": ["Chicken", "Spices", "Coconut Milk", "Lime Leaves", "Meat", "Animal Products"]}
 })
 
 restaurant_graph.add_restaurant('Deles', {
-    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce"]},
-    'Sate Ayam': {"Price": 15000, "Ingredients": ["Chicken", "Soy Sauce", "Peanut", "Peanut Sauce", "Cucumber"]},
-    'Siomay': {"Price": 17000, "Ingredients": ["Fish", "Shrimp", "Tofu", "Peanut", "Peanut Sauce"]},
-    'Soto Ayam': {"Price": 14000, "Ingredients": ["Chicken", "Turmeric", "Lime Leaves", "Rice Noodle"]}
+    'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce", "Animal Products"]},
+    'Sate Ayam': {"Price": 15000, "Ingredients": ["Chicken", "Soy Sauce", "Peanut", "Peanut Sauce", "Cucumber", "Meat", "Animal Products"]},
+    'Siomay': {"Price": 17000, "Ingredients": ["Fish", "Shrimp", "Tofu", "Peanut", "Peanut Sauce", "Seafood", "Animal Products"]},
+    'Soto Ayam': {"Price": 14000, "Ingredients": ["Chicken", "Turmeric", "Lime Leaves", "Rice Noodle", "Meat", "Animal Products"]}
 })
 
 restaurant_graph.add_restaurant('Gobar', {
-    'Gurame Bakar': {"Price": 25000, "Ingredients": ["Fish", "Gurame Fish", "Spices", "Sweet Soy Sauce", "Lime"]},
-    'Patin Bakar': {"Price": 19000, "Ingredients": ["Fish","Patin Fish", "Spices", "Sweet Soy Sauce", "Lime"]},
-    'Lele Bakar': {"Price": 13000, "Ingredients": ["Fish","Catfish", "Spices", "Sweet Soy Sauce", "Lime"]}
+    'Gurame Bakar': {"Price": 25000, "Ingredients": ["Fish", "Gurame Fish", "Spices", "Sweet Soy Sauce", "Lime", "Seafood", "Animal Products"]},
+    'Patin Bakar': {"Price": 19000, "Ingredients": ["Fish","Patin Fish", "Spices", "Sweet Soy Sauce", "Lime", "Seafood", "Animal Products"]},
+    'Lele Bakar': {"Price": 13000, "Ingredients": ["Fish","Catfish", "Spices", "Sweet Soy Sauce", "Lime", "Seafood", "Animal Products"]}
 })
 
 restaurant_graph.add_restaurant('KFC Mulyosari', {
-    'Hot Wings': {"Price": 15000, "Ingredients": ["Chicken", "Hot Sauce", "Butter", "Celery"]},
-    'Chicken Popcorn': {"Price": 16000, "Ingredients": ["Chicken", "Flour", "Spices"]},
-    'Chicken Strips': {"Price": 17000, "Ingredients": ["Chicken", "Flour", "Spices"]},
-    'Chicken Burger': {"Price": 18000, "Ingredients": ["Chicken", "Bread", "Lettuce", "Tomato"]},
-    'Extra Crispy Chicken': {"Price": 17000, "Ingredients": ["Chicken", "Crispy Coating", "Spices", "Dipping Sauce"]}
+    'Hot Wings': {"Price": 15000, "Ingredients": ["Chicken", "Hot Sauce", "Butter", "Celery", "Meat", "Animal Products"]},
+    'Chicken Popcorn': {"Price": 16000, "Ingredients": ["Chicken", "Flour", "Spices", "Meat", "Animal Products"]},
+    'Chicken Strips': {"Price": 17000, "Ingredients": ["Chicken", "Flour", "Spices", "Meat", "Animal Products"]},
+    'Chicken Burger': {"Price": 18000, "Ingredients": ["Chicken", "Bread", "Lettuce", "Tomato", "Meat", "Animal Products"]},
+    'Extra Crispy Chicken': {"Price": 17000, "Ingredients": ["Chicken", "Crispy Coating", "Spices", "Dipping Sauce", "Meat", "Animal Products"]}
 })
 
 restaurant_graph.add_restaurant('Mie Ayam Nusantara', {
-    'Mie Ayam': {"Price": 12000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Soy Sauce"]}
+    'Mie Ayam': {"Price": 12000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Soy Sauce", "Meat", "Animal Products"]},
 })
 
 restaurant_graph.add_restaurant('Geprek Joder Ka Dhani', {
-    'Ayam Geprek': {"Price": 16000, "Ingredients": ["Chicken", "Chili Paste", "Tomato", "Spices"]},
-    'Cumi Geprek': {"Price": 17000, "Ingredients": ["Calamari", "Chili Paste", "Tomato", "Spices"]}
+    'Ayam Geprek': {"Price": 16000, "Ingredients": ["Chicken", "Chili Paste", "Tomato", "Spices", "Meat", "Animal Products"]},
+    'Cumi Geprek': {"Price": 17000, "Ingredients": ["Calamari", "Chili Paste", "Tomato", "Spices", "Meat", "Animal Products"]},
 })
 
 restaurant_graph.add_restaurant('Mie Gacoan Manyar', {
-    'Mie Hompimpa': {"Price": 16000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Special Sauce"]}
+    'Mie Hompimpa': {"Price": 16000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Special Sauce", "Meat", "Animal Products"]},
 })
 
 # Add edges with specified distances    
@@ -213,11 +244,8 @@ def heuristic(node1, node2):
         case 'Home':
             return 0
 
-
 # Display menus from restaurants that do not contain the specified ingredients to avoid
-# Add ingredients to avoid
-avoid_ingredients = []
-restaurant_graph.display_filtered_menus(avoid_ingredients)
+restaurant_graph.display_filtered_menus()
 
 # Draw the graph using Matplotlib
 restaurant_graph.draw_graph()
