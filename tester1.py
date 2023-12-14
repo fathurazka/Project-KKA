@@ -17,10 +17,10 @@ class RestaurantGraph:
     def set_diets(self, selected_diets):
         # Define avoided ingredients based on the chosen diets
         diets = {
-            'vegetarian': ['Meat', 'Seafood'],
-            'vegan': ["Animal Products"],
-            'pescatarian': ['Meat'],
-            'gluten-free': ['wheat', 'barley', 'rye'],
+            'vegetarian': ['meat', 'seafood'],
+            'vegan': ["animal products"],
+            'pescatarian': ['meat'],
+            'gluten-free': ['flour'],
             'lactose-free': ['milk', 'cheese', 'yogurt', 'butter', 'cream', 'dairy'],
             'low-carb': ['rice', 'potatoes', 'bread', 'pasta'],
             'nut-free': ['peanuts', 'almonds', 'cashews', 'walnuts'],
@@ -46,27 +46,59 @@ class RestaurantGraph:
                 filtered_restaurants.append(restaurant)
 
         return filtered_restaurants
+    
+    def center_window(self, root):
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+        
+        x = (screen_width/2) - (root.winfo_width() / 2)
+        y = (screen_height/2) - (root.winfo_height() / 2)
+        
+        root.geometry("+%d+%d" % (x, y))
 
     def display_filtered_menus(self):
         # Create a tkinter window
         root = tk.Tk()
-        root.title("Filtered Menus")
+        root.title("Restaurant Filter")
+        root.geometry("1280x720")
+        root.update_idletasks()
+        self.center_window(root)
+        root.configure(background='#dbe2ef')
 
         # Make the window resizable
         root.resizable(width=True, height=True)
+        
+        # Define the list of diets
+        diets = ['vegetarian', 'vegan', 'pescatarian', 'gluten-free', 'lactose-free', 'low-carb', 'nut-free', 'keto']
 
         # Create checkboxes for diets
         diet_checkboxes = {}
-        for diet in ['vegetarian', 'vegan', 'pescatarian', 'gluten-free', 'lactose-free', 'low-carb', 'nut-free', 'keto']:
-            var = IntVar()
-            checkbox = Checkbutton(root, text=diet, variable=var)
-            checkbox.pack()
+        
+        
+        
+        frames = [tk.Frame(root, background='#dbe3ef') for _ in range((len(diets) + 2) // 3)]
+        for i, frame in enumerate(frames):
+            frame.grid(row=i, column=2, columnspan=2)
+            root.grid_rowconfigure(i, weight=1)
+            
+            root.grid_columnconfigure(i%3, weight=1)
+        
+        for i, diet in enumerate(diets):
+            var = tk.IntVar()
+            checkbox = tk.Checkbutton(frames[i//3], text=diet, variable=var, width=10)
+            checkbox.configure(background='#dbe2ef')
+            checkbox.grid(row=0, column=i%3)
+            frames[i//3].grid_columnconfigure(i%3, weight=1)
+            #root.grid_columnconfigure(i%3, weight=1) 
             diet_checkboxes[diet] = var
 
-        custom_label = Label(root, text="Enter custom avoided ingredients (comma-separated):")
-        custom_label.pack()
+        custom_label = tk.Label(root, text="Enter custom avoided ingredients (comma-separated):")
+        custom_label.configure(background='#dbe2ef')
+        custom_label.grid(row=len(frames), column=0, columnspan=6, sticky='ew')
+        
         custom_entry = Entry(root)
-        custom_entry.pack()
+        custom_entry.configure(width=48)
+        custom_entry.grid(row=len(diets)//3+2, column=0, columnspan=6)
 
         def update_diets():
             selected_diets = [diet for diet, var in diet_checkboxes.items() if var.get()]
@@ -77,11 +109,15 @@ class RestaurantGraph:
 
         # Create a button to trigger the diet update
         update_button = Button(root, text="Update Diets", command=update_diets)
-        update_button.pack()
+        update_button.grid(row=len(diets)//3+3, column=0, columnspan=6)
+        
+        for i in range(6):
+            root.grid_columnconfigure(i, weight=1)
 
         # Create a scrolled text widget
         text_widget = scrolledtext.ScrolledText(root, width=40, height=20)
-        text_widget.pack(fill=tk.BOTH, expand=True)
+        text_widget.configure(background='#F9F7F7', height=25)
+        text_widget.grid(row=len(diets)//3+4, column=0, columnspan=6, sticky='ew')
 
         def display_menus():
             nonlocal text_widget
@@ -106,7 +142,7 @@ class RestaurantGraph:
 
         # Create a button to trigger the display
         display_button = Button(root, text="Display Menus", command=display_menus)
-        display_button.pack()
+        display_button.grid(row=len(diets)//3+5, column=0, columnspan=6)
 
         # Run the tkinter main loop
         root.mainloop()
@@ -117,6 +153,8 @@ class RestaurantGraph:
         edge_labels = nx.get_edge_attributes(self.graph, 'weight')
         nx.draw_networkx_edge_labels(self.graph, pos, edge_labels=edge_labels)
         plt.show()
+        
+
 
 # Example Usage:
 restaurant_graph = RestaurantGraph()
@@ -144,7 +182,7 @@ restaurant_graph.add_restaurant('Penyetan Mbak Lis', {
 restaurant_graph.add_restaurant('Warung Kane', {
     'Pizza Mie': {"Price": 17000, "Ingredients": ["Instant Noodles", "Tomato Sauce", "Cheese", "Toppings", "Dairy", "Animal Products"]},
     'Bandeng Presto': {"Price": 20000, "Ingredients": ["Milkfish", "Spices", "Coconut Milk", "Turmeric", "Seafood", "Animal Products"]},
-    'Ayam Katsu': {"Price": 18000, "Ingredients": ["Chicken", "Bread Crumbs", "Egg", "Cabbage", "Meat", "Animal Products"]}
+    'Ayam Katsu': {"Price": 18000, "Ingredients": ["Chicken", "Bread Crumbs", "Egg", "Cabbage", "Meat", "Animal Products", "flour"]}
 
 })
 
@@ -156,7 +194,7 @@ restaurant_graph.add_restaurant('J-One', {
 
 restaurant_graph.add_restaurant('Warung Kampus', {
     'Grilled Sausages': {"Price": 16000, "Ingredients": ["Sausages", "Mustard", "Ketchup", "Herbs", "Meat", "Animal Products"]},
-    'Katsu Ikan': {"Price": 16000, "Ingredients": ["Fish", "Bread Crumbs", "Egg", "Cabbage", "Seafood", "Animal Products"]},
+    'Katsu Ikan': {"Price": 16000, "Ingredients": ["Fish", "Bread Crumbs", "Egg", "Cabbage", "Seafood", "Animal Products", "flour"]},
     'Tahu Petis': {"Price": 14000, "Ingredients": ["Tofu", "Shrimp Paste", "Palm Sugar", "Chilies"]},
     'Ayam Rempah': {"Price": 17000, "Ingredients": ["Chicken", "Spices", "Coconut Milk", "Lime Leaves", "Meat", "Animal Products"]}
 })
@@ -164,7 +202,7 @@ restaurant_graph.add_restaurant('Warung Kampus', {
 restaurant_graph.add_restaurant('Deles', {
     'Nasi Goreng': {"Price": 10000, "Ingredients": ["Rice", "Vegetables", "Egg", "Soy Sauce", "Animal Products"]},
     'Sate Ayam': {"Price": 15000, "Ingredients": ["Chicken", "Soy Sauce", "Peanut", "Peanut Sauce", "Cucumber", "Meat", "Animal Products"]},
-    'Siomay': {"Price": 17000, "Ingredients": ["Fish", "Shrimp", "Tofu", "Peanut", "Peanut Sauce", "Seafood", "Animal Products"]},
+    'Siomay': {"Price": 17000, "Ingredients": ["Fish", "Shrimp", "Tofu", "Peanut", "Peanut Sauce", "Seafood", "Animal Products", "flour"]},
     'Soto Ayam': {"Price": 14000, "Ingredients": ["Chicken", "Turmeric", "Lime Leaves", "Rice Noodle", "Meat", "Animal Products"]}
 })
 
@@ -175,24 +213,24 @@ restaurant_graph.add_restaurant('Gobar', {
 })
 
 restaurant_graph.add_restaurant('KFC Mulyosari', {
-    'Hot Wings': {"Price": 15000, "Ingredients": ["Chicken", "Hot Sauce", "Butter", "Celery", "Meat", "Animal Products"]},
-    'Chicken Popcorn': {"Price": 16000, "Ingredients": ["Chicken", "Flour", "Spices", "Meat", "Animal Products"]},
-    'Chicken Strips': {"Price": 17000, "Ingredients": ["Chicken", "Flour", "Spices", "Meat", "Animal Products"]},
-    'Chicken Burger': {"Price": 18000, "Ingredients": ["Chicken", "Bread", "Lettuce", "Tomato", "Meat", "Animal Products"]},
-    'Extra Crispy Chicken': {"Price": 17000, "Ingredients": ["Chicken", "Crispy Coating", "Spices", "Dipping Sauce", "Meat", "Animal Products"]}
+    'Hot Wings': {"Price": 15000, "Ingredients": ["Chicken", "Hot Sauce", "Butter", "Celery", "Meat", "Animal Products", "flour"]},
+    'Chicken Popcorn': {"Price": 16000, "Ingredients": ["Chicken", "Flour", "Spices", "Meat", "Animal Products", "flour"]},
+    'Chicken Strips': {"Price": 17000, "Ingredients": ["Chicken", "Flour", "Spices", "Meat", "Animal Products", "flour"]},
+    'Chicken Burger': {"Price": 18000, "Ingredients": ["Chicken", "Bread", "Lettuce", "Tomato", "Meat", "Animal Products", "flour"]},
+    'Extra Crispy Chicken': {"Price": 17000, "Ingredients": ["Chicken", "Crispy Coating", "Spices", "Dipping Sauce", "Meat", "Animal Products", "flour"]}
 })
 
 restaurant_graph.add_restaurant('Mie Ayam Nusantara', {
-    'Mie Ayam': {"Price": 12000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Soy Sauce", "Meat", "Animal Products"]},
+    'Mie Ayam': {"Price": 12000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Soy Sauce", "Meat", "Animal Products", "flour"]},
 })
 
 restaurant_graph.add_restaurant('Geprek Joder Ka Dhani', {
-    'Ayam Geprek': {"Price": 16000, "Ingredients": ["Chicken", "Chili Paste", "Tomato", "Spices", "Meat", "Animal Products"]},
-    'Cumi Geprek': {"Price": 17000, "Ingredients": ["Calamari", "Chili Paste", "Tomato", "Spices", "Meat", "Animal Products"]},
+    'Ayam Geprek': {"Price": 16000, "Ingredients": ["Chicken", "Chili Paste", "Tomato", "Spices", "Meat", "Animal Products", "flour"]},
+    'Cumi Geprek': {"Price": 17000, "Ingredients": ["Calamari", "Chili Paste", "Tomato", "Spices", "Meat", "Animal Products" , "flour"]},
 })
 
 restaurant_graph.add_restaurant('Mie Gacoan Manyar', {
-    'Mie Hompimpa': {"Price": 16000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Special Sauce", "Meat", "Animal Products"]},
+    'Mie Hompimpa': {"Price": 16000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Special Sauce", "Meat", "Animal Products", "flour"]},
 })
 
 # Add edges with specified distances    
