@@ -74,8 +74,6 @@ class RestaurantGraph:
         # Create checkboxes for diets
         diet_checkboxes = {}
         
-        
-        
         frames = [tk.Frame(root, background='#dbe3ef') for _ in range((len(diets) + 2) // 3)]
         for i, frame in enumerate(frames):
             frame.grid(row=i, column=2, columnspan=2)
@@ -124,6 +122,9 @@ class RestaurantGraph:
             text_widget.delete(1.0, tk.END)  # Clear previous content
             filtered_restaurants = self.filter_restaurants()
 
+            # Sort restaurants based on the shortest distance from 'Home'
+            filtered_restaurants.sort(key=lambda restaurant: nx.shortest_path_length(self.graph, source='Home', target=restaurant, weight='weight'))
+
             for restaurant in filtered_restaurants:
                 menu = self.graph.nodes[restaurant].get('menu', {})
                 filtered_dishes = []
@@ -140,6 +141,13 @@ class RestaurantGraph:
                         price = dish_info.get('Price', 'N/A')
                         text_widget.insert(tk.END, f"  {dish}, Price: {price}\n")
 
+                    # Display distance information
+                    if 'Home' in self.graph.nodes and restaurant != 'Home':
+                        distance = nx.shortest_path_length(self.graph, source='Home', target=restaurant, weight='weight')
+                        text_widget.insert(tk.END, f"  Distance: {distance} meters\n")
+                    else:
+                        text_widget.insert(tk.END, f"  Distance: N/A\n")
+
         # Create a button to trigger the display
         display_button = Button(root, text="Display Menus", command=display_menus)
         display_button.grid(row=len(diets)//3+5, column=0, columnspan=6)
@@ -154,8 +162,6 @@ class RestaurantGraph:
         nx.draw_networkx_edge_labels(self.graph, pos, edge_labels=edge_labels)
         plt.show()
         
-
-
 # Example Usage:
 restaurant_graph = RestaurantGraph()
 
@@ -221,7 +227,7 @@ restaurant_graph.add_restaurant('KFC Mulyosari', {
 })
 
 restaurant_graph.add_restaurant('Mie Ayam Nusantara', {
-    'Mie Ayam': {"Price": 12000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Soy Sauce", "Meat", "Animal Products", "flour"]},
+    'Mie Ayam': {"Price": 12000, "Ingredients": ["Noodles", "Chicken", "Vegetables", "Soy Sauce", "Meat", "Animal Products", "flour"]},
 })
 
 restaurant_graph.add_restaurant('Geprek Joder Ka Dhani', {
@@ -230,7 +236,7 @@ restaurant_graph.add_restaurant('Geprek Joder Ka Dhani', {
 })
 
 restaurant_graph.add_restaurant('Mie Gacoan Manyar', {
-    'Mie Hompimpa': {"Price": 16000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Special Sauce", "Meat", "Animal Products", "flour"]},
+    'Mie Hompimpa': {"Price": 16000, "Ingredients": ["Noodles", "Chicken", "Vegetables", "Special Sauce", "Meat", "Animal Products", "flour"]},
 })
 
 # Add edges with specified distances    
@@ -253,7 +259,7 @@ restaurant_graph.add_edge('Mie Gacoan Manyar', 'Geprek Joder Ka Dhani', 2000)
 restaurant_graph.add_edge('Geprek Joder Ka Dhani', 'Mie Ayam Nusantara', 130)
 restaurant_graph.add_edge('Geprek Joder Ka Dhani', 'Deles', 1200)
 
-def heuristic(node1, node2):
+def heuristic(node1):
     match node1:
         case 'Tombo Luwe':
             return 162
