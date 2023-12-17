@@ -47,21 +47,39 @@ class RestaurantGraph:
 
         return filtered_restaurants
     
+    def run_application(self):
+        # Landing Page
+        landing_root = tk.Tk()
+        landing_root.title("DietNav - Welcome")
+        landing_root.geometry("600x400")
+        landing_root.configure(background='#dbe2ef')
+
+        welcome_label = Label(landing_root, text="Welcome to DietNav", font=("Helvetica", 24), background='#dbe2ef')
+        welcome_label.pack(pady=20)
+
+        description_label = Label(landing_root, text="An application to help you find restaurants based on your dietary preferences.", font=("Helvetica", 14), background='#dbe2ef')
+        description_label.pack(pady=20)
+
+        continue_button = Button(landing_root, text="Continue", command=landing_root.destroy)
+        continue_button.pack(pady=20)
+
+        landing_root.mainloop()
+    
     def center_window(self, root):
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
         
-        x = (screen_width/2) - (root.winfo_width() / 2)
-        y = (screen_height/2) - (root.winfo_height() / 2)
+        x = (screen_width / 2) - (root.winfo_width() / 2)
+        y = (screen_height / 2) - (root.winfo_height() / 2)
         
-        root.geometry("+%d+%d" % (x, y))
+        root.geometry(f"+{int(x)}+{int(y)}")
 
     def display_filtered_menus(self):
-        # Create a tkinter window
         root = tk.Tk()
         root.title("Restaurant Filter")
-        root.geometry("1280x720")
-        root.update_idletasks()
+        root.geometry("800x600")
+        root.configure(background='#dbe2ef')
+
         self.center_window(root)
         root.configure(background='#dbe2ef')
 
@@ -84,19 +102,17 @@ class RestaurantGraph:
         for i, diet in enumerate(diets):
             var = tk.IntVar()
             checkbox = tk.Checkbutton(frames[i//3], text=diet, variable=var, width=10)
-            checkbox.configure(background='#dbe2ef')
-            checkbox.grid(row=0, column=i%3)
+            checkbox.configure(background='#dbe2ef', font=('Arial', 10))
+            checkbox.grid(row=0, column=i%3, pady=5, padx=10)
             frames[i//3].grid_columnconfigure(i%3, weight=1)
-            #root.grid_columnconfigure(i%3, weight=1) 
-            diet_checkboxes[diet] = var
 
-        custom_label = tk.Label(root, text="Enter custom avoided ingredients (comma-separated):")
-        custom_label.configure(background='#dbe2ef')
+        custom_label = tk.Label(root, text="Enter custom avoided ingredients (comma-separated):", font=('Arial', 12))
+        custom_label.configure(background='#dbe2ef', pady=10)
         custom_label.grid(row=len(frames), column=0, columnspan=6, sticky='ew')
-        
-        custom_entry = Entry(root)
+
+        custom_entry = Entry(root, font=('Arial', 12))
         custom_entry.configure(width=48)
-        custom_entry.grid(row=len(diets)//3+2, column=0, columnspan=6)
+        custom_entry.grid(row=len(diets)//3+2, column=0, columnspan=6, pady=5)
 
         def update_diets():
             selected_diets = [diet for diet, var in diet_checkboxes.items() if var.get()]
@@ -113,9 +129,9 @@ class RestaurantGraph:
             root.grid_columnconfigure(i, weight=1)
 
         # Create a scrolled text widget
-        text_widget = scrolledtext.ScrolledText(root, width=40, height=20)
-        text_widget.configure(background='#F9F7F7', height=25)
-        text_widget.grid(row=len(diets)//3+4, column=0, columnspan=6, sticky='ew')
+        text_widget = scrolledtext.ScrolledText(root, width=40, height=15, font=('Arial', 12))
+        text_widget.configure(background='#F9F7F7')
+        text_widget.grid(row=len(diets)//3+4, column=0, columnspan=6, sticky='ew', pady=10)
 
         def display_menus():
             nonlocal text_widget
@@ -259,7 +275,7 @@ restaurant_graph.add_edge('Mie Gacoan Manyar', 'Geprek Joder Ka Dhani', 2000)
 restaurant_graph.add_edge('Geprek Joder Ka Dhani', 'Mie Ayam Nusantara', 130)
 restaurant_graph.add_edge('Geprek Joder Ka Dhani', 'Deles', 1200)
 
-def heuristic(node1):
+def heuristic(node1, node2):
     match node1:
         case 'Tombo Luwe':
             return 162
@@ -289,6 +305,7 @@ def heuristic(node1):
             return 0
 
 # Display menus from restaurants that do not contain the specified ingredients to avoid
+restaurant_graph.run_application()
 restaurant_graph.display_filtered_menus()
 
 # Draw the graph using Matplotlib
