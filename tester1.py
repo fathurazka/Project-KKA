@@ -84,10 +84,16 @@ class RestaurantGraph:
         # Create a tkinter window
         root = tk.Tk()
         root.title("Restaurant Filter")
-        root.geometry("1280x720")
+        root.attributes('-fullscreen', True)
+        #root.geometry("1280x720")
         root.update_idletasks()
         self.center_window(root)
         root.configure(background='#dbe2ef')
+        def toggle_fullscreen(event=None):
+            state = not root.attributes("-fullscreen")
+            root.attributes("-fullscreen", state)
+            return "break"
+        root.bind("<F11>", toggle_fullscreen)
 
         # Make the window resizable
         root.resizable(width=True, height=True)
@@ -165,8 +171,8 @@ class RestaurantGraph:
                         text_widget.insert(tk.END, f"  {dish}, Price: {price}\n")
 
         # Create a button to trigger the display
-        display_button = Button(root, text="Display Menus", command=display_menus)
-        display_button.grid(row=len(diets)//3+5, column=0, columnspan=6)
+        #display_button = Button(root, text="Display Menus", command=display_menus)
+        #display_button.grid(row=len(diets)//3+5, column=0, columnspan=6)
 
         # Run the tkinter main loop
         root.mainloop()
