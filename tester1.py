@@ -4,18 +4,23 @@ import tkinter as tk
 from tkinter import scrolledtext, Entry, Button, Label, Checkbutton, IntVar
 
 class RestaurantGraph:
+    # Inisiasi graph dengan library networkx
+    # serta inisiasi list bahan yang harus dihindari
     def __init__(self):
         self.graph = nx.Graph()
-        self.avoided_ingredients = []  # Initialize with an empty list
+        self.avoided_ingredients = []  
 
+    # Menambahkan node restoran ke dalam graph
     def add_restaurant(self, name, menu):
         self.graph.add_node(name, menu=menu)
 
+    # Menambahkan edge antar restoran ke dalam graph
     def add_edge(self, restaurant1, restaurant2, distance):
         self.graph.add_edge(restaurant1, restaurant2, weight=distance)
 
+    # Mengatur bahan yang harus dihindari berdasarkan diet
     def set_diets(self, selected_diets):
-        # Define avoided ingredients based on the chosen diets
+        # Daftar bahan yang harus dihindari berdasarkan diet
         diets = {
             'vegetarian': ['meat', 'seafood'],
             'vegan': ["animal products"],
@@ -26,29 +31,31 @@ class RestaurantGraph:
             'nut-free': ['peanuts', 'almonds', 'cashews', 'walnuts'],
             'keto': ['rice', 'potatoes', 'bread', 'pasta', 'sugar', 'fruits', 'legumes', 'grains'],
         }
-
+        
         self.avoided_ingredients = []
         for diet in selected_diets:
             self.avoided_ingredients.extend(diets.get(diet, []))
 
+    # Mengatur bahan yang harus dihindari berdasarkan input pengguna
     def set_custom_avoided_ingredients(self, custom_ingredients):
-        # Split custom ingredients into a list and convert to lowercase
+        # Mengatur agar input menjadi lowercase dan memisahkan tiap bahan dengan koma
         self.avoided_ingredients += [ingredient.strip().lower() for ingredient in custom_ingredients.split(',')]
 
+    # Mengembalikan daftar restoran yang lolos filtering
     def filter_restaurants(self):
         filtered_restaurants = []
         for restaurant in self.graph.nodes:
             menu = self.graph.nodes[restaurant].get('menu', {})
             menu_ingredients = menu.get('Ingredients', [])
 
-            # Check both diet-based and custom avoided ingredients
+            # Mengecek apakah restoran mengandung bahan yang harus dihindari
             if not any(ingredient in self.avoided_ingredients for ingredient in map(str.lower, menu_ingredients)):
                 filtered_restaurants.append(restaurant)
 
         return filtered_restaurants
     
+    # Awalan aplikasi berupa landing page
     def run_application(self):
-        # Landing Page
         landing_root = tk.Tk()
         landing_root.title("DietNav - Welcome")
         #landing_root.geometry("600x400")
@@ -59,7 +66,7 @@ class RestaurantGraph:
             landing_root.attributes("-fullscreen", state)
             return "break"
         landing_root.bind("<F11>", toggle_fullscreen)
-
+        
         welcome_label = Label(landing_root, text="Welcome to DietNav!", font=("Helvetica", 36, "bold"), background='#dbe2ef')
         welcome_label.pack(pady=40)
 
@@ -71,6 +78,7 @@ class RestaurantGraph:
 
         landing_root.mainloop()
     
+    # Menengahkan window tkinter
     def center_window(self, root):
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
@@ -80,8 +88,8 @@ class RestaurantGraph:
         
         root.geometry("+%d+%d" % (x, y))
 
+    # Menampilkan menu restoran yang lolos filtering
     def display_filtered_menus(self):
-        # Create a tkinter window
         root = tk.Tk()
         root.title("Restaurant Filter")
         root.attributes('-fullscreen', True)
@@ -95,17 +103,13 @@ class RestaurantGraph:
             return "break"
         root.bind("<F11>", toggle_fullscreen)
 
-        # Make the window resizable
         root.resizable(width=True, height=True)
         
-        # Define the list of diets
+        # Daftar diet yang dapat dipilih dengan checkbox di window tkinter
         diets = ['vegetarian', 'vegan', 'pescatarian', 'gluten-free', 'lactose-free', 'low-carb', 'nut-free', 'keto']
-
-        # Create checkboxes for diets
         diet_checkboxes = {}
         
-        
-        
+        # membuat frame untuk menampilkan checkbox
         frames = [tk.Frame(root, background='#dbe3ef') for _ in range((len(diets) + 2) // 3)]
         for i, frame in enumerate(frames):
             frame.grid(row=i, column=2, columnspan=2)
@@ -113,6 +117,7 @@ class RestaurantGraph:
             
             root.grid_columnconfigure(i%3, weight=1)
         
+        # membuat checkbox untuk setiap diet
         for i, diet in enumerate(diets):
             var = tk.IntVar()
             checkbox = tk.Checkbutton(frames[i//3], text=diet, variable=var, width=10)
@@ -121,7 +126,7 @@ class RestaurantGraph:
             frames[i//3].grid_columnconfigure(i%3, weight=1)
             #root.grid_columnconfigure(i%3, weight=1) 
             diet_checkboxes[diet] = var
-
+        
         custom_label = tk.Label(root, text="Enter custom avoided ingredients (comma-separated):")
         custom_label.configure(background='#dbe2ef')
         custom_label.grid(row=len(frames), column=0, columnspan=6, sticky='ew')
@@ -129,29 +134,31 @@ class RestaurantGraph:
         custom_entry = Entry(root)
         custom_entry.configure(width=48)
         custom_entry.grid(row=len(diets)//3+2, column=0, columnspan=6)
-
+        
+        # membuat button untuk update diet
         def update_diets():
             selected_diets = [diet for diet, var in diet_checkboxes.items() if var.get()]
             self.set_diets(selected_diets)
             custom_ingredients = custom_entry.get()
             self.set_custom_avoided_ingredients(custom_ingredients)
-            display_menus()
-
-        # Create a button to trigger the diet update
+            display_menus() 
+        
         update_button = Button(root, text="Update Diets", command=update_diets)
         update_button.grid(row=len(diets)//3+3, column=0, columnspan=6)
         
+        # membuat frame untuk menampilkan menu
         for i in range(6):
             root.grid_columnconfigure(i, weight=1)
 
-        # Create a scrolled text widget
+        # membuat scrolled text untuk menampilkan menu
         text_widget = scrolledtext.ScrolledText(root, width=40, height=20)
         text_widget.configure(background='#F9F7F7', height=25)
         text_widget.grid(row=len(diets)//3+4, column=0, columnspan=6, sticky='ew')
-
+        
+        # membuat button untuk menampilkan menu
         def display_menus():
             nonlocal text_widget
-            text_widget.delete(1.0, tk.END)  # Clear previous content
+            text_widget.delete(1.0, tk.END)
             filtered_restaurants = self.filter_restaurants()
 
             for restaurant in filtered_restaurants:
@@ -160,7 +167,7 @@ class RestaurantGraph:
 
                 for dish, dish_info in menu.items():
                     dish_ingredients = dish_info.get('Ingredients', [])
-                    # Check both diet-based and custom avoided ingredients
+                    # Mengecek apakah restoran mengandung bahan yang harus dihindari
                     if not any(ingredient in self.avoided_ingredients for ingredient in map(str.lower, dish_ingredients)):
                         filtered_dishes.append((dish, dish_info))
 
@@ -169,14 +176,13 @@ class RestaurantGraph:
                     for dish, dish_info in filtered_dishes:
                         price = dish_info.get('Price', 'N/A')
                         text_widget.insert(tk.END, f"  {dish}, Price: {price}\n")
-
-        # Create a button to trigger the display
+                
         #display_button = Button(root, text="Display Menus", command=display_menus)
         #display_button.grid(row=len(diets)//3+5, column=0, columnspan=6)
 
-        # Run the tkinter main loop
         root.mainloop()
-
+    
+    # Menggambar graph menggunakan Matplotlib
     def draw_graph(self):
         pos = nx.shell_layout(self.graph)
         nx.draw(self.graph, pos, with_labels=True, font_weight='bold')
@@ -184,12 +190,10 @@ class RestaurantGraph:
         nx.draw_networkx_edge_labels(self.graph, pos, edge_labels=edge_labels)
         plt.show()
         
-
-
-# Example Usage:
+# Inisiasi graph
 restaurant_graph = RestaurantGraph()
 
-# Add restaurants to the graph with updated menu representation
+# Menambahkan node restoran beserta menu dan bahan
 restaurant_graph.add_restaurant('Tombo Luwe', {
     'Tahu Bacem': {"Price": 13000, "Ingredients": ["Tofu", "Palm Sugar", "Coriander", "Galangal"]},
     'Tempe Bacem': {"Price": 14000, "Ingredients": ["Tempe", "Palm Sugar", "Coriander", "Galangal"]},
@@ -262,9 +266,8 @@ restaurant_graph.add_restaurant('Geprek Joder Ka Dhani', {
 restaurant_graph.add_restaurant('Mie Gacoan Manyar', {
     'Mie Hompimpa': {"Price": 16000, "Ingredients": ["Egg Noodles", "Chicken", "Vegetables", "Special Sauce", "Meat", "Animal Products", "flour"]},
 })
-
-# Add edges with specified distances    
-
+  
+# Menambahkan edge antar restoran beserta jaraknya
 restaurant_graph.add_edge('Home', 'Gobar', 3500)
 restaurant_graph.add_edge('Home', 'Tombo Luwe', 400)
 restaurant_graph.add_edge('Home', 'J-One', 500)
@@ -283,6 +286,7 @@ restaurant_graph.add_edge('Mie Gacoan Manyar', 'Geprek Joder Ka Dhani', 2000)
 restaurant_graph.add_edge('Geprek Joder Ka Dhani', 'Mie Ayam Nusantara', 130)
 restaurant_graph.add_edge('Geprek Joder Ka Dhani', 'Deles', 1200)
 
+# Menambahkan fungsi heuristik untuk A* search
 def heuristic(node1, node2):
     match node1:
         case 'Tombo Luwe':
@@ -312,9 +316,9 @@ def heuristic(node1, node2):
         case 'Home':
             return 0
 
-# Display menus from restaurants that do not contain the specified ingredients to avoid
+# Eksekusi program
 restaurant_graph.run_application()
 restaurant_graph.display_filtered_menus()
 
-# Draw the graph using Matplotlib
-restaurant_graph.draw_graph()
+# Menampilkan graph
+# restaurant_graph.draw_graph()
