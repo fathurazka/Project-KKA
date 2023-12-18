@@ -47,6 +47,30 @@ class RestaurantGraph:
 
         return filtered_restaurants
     
+    def run_application(self):
+        # Landing Page
+        landing_root = tk.Tk()
+        landing_root.title("DietNav - Welcome")
+        #landing_root.geometry("600x400")
+        landing_root.attributes('-fullscreen', True)
+        landing_root.configure(background='#dbe2ef')
+        def toggle_fullscreen(event=None):
+            state = not landing_root.attributes("-fullscreen")
+            landing_root.attributes("-fullscreen", state)
+            return "break"
+        landing_root.bind("<F11>", toggle_fullscreen)
+
+        welcome_label = Label(landing_root, text="Welcome to DietNav!", font=("Helvetica", 36, "bold"), background='#dbe2ef')
+        welcome_label.pack(pady=40)
+
+        description_label = Label(landing_root, text="DietNav is an application to help you find restaurants based on your dietary preferences.", font=("Helvetica", 16), background='#dbe2ef')
+        description_label.pack(pady=20)
+
+        continue_button = Button(landing_root, text="Continue", font=("Helvetica", 14, "bold"), command=landing_root.destroy, bg="#4CAF50", fg="white", padx=20, pady=10)
+        continue_button.pack(pady=40)
+
+        landing_root.mainloop()
+    
     def center_window(self, root):
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
@@ -283,6 +307,7 @@ def heuristic(node1, node2):
             return 0
 
 # Display menus from restaurants that do not contain the specified ingredients to avoid
+restaurant_graph.run_application()
 restaurant_graph.display_filtered_menus()
 
 # Draw the graph using Matplotlib
