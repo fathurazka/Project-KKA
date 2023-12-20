@@ -159,26 +159,34 @@ class RestaurantGraph:
         def display_menus():
             nonlocal text_widget
             text_widget.delete(1.0, tk.END)
-            filtered_restaurants = self.filter_restaurants()
+            filtered_restaurants = restaurant_graph.filter_restaurants()
+            home_node = 'Home'
 
-            for restaurant in filtered_restaurants:
-                menu = self.graph.nodes[restaurant].get('menu', {})
+            # Create a list of tuples containing restaurant and its distance to the Home node
+            distances = [(restaurant, nx.astar_path_length(restaurant_graph.graph, home_node, restaurant, heuristic=heuristic)) for restaurant in filtered_restaurants]
+
+            # Sort the list by distance
+            distances.sort(key=lambda x: x[1])
+
+            for restaurant, distance in distances:
+                menu = restaurant_graph.graph.nodes[restaurant].get('menu', {})
                 filtered_dishes = []
 
                 for dish, dish_info in menu.items():
                     dish_ingredients = dish_info.get('Ingredients', [])
                     # Mengecek apakah restoran mengandung bahan yang harus dihindari
-                    if not any(ingredient in self.avoided_ingredients for ingredient in map(str.lower, dish_ingredients)):
+                    if not any(ingredient in restaurant_graph.avoided_ingredients for ingredient in map(str.lower, dish_ingredients)):
                         filtered_dishes.append((dish, dish_info))
 
                 if filtered_dishes:
-                    text_widget.insert(tk.END, f"Restaurant {restaurant} Menu:\n")
+                    # Display the restaurant name and distance
+                    text_widget.insert(tk.END, f"Restaurant {restaurant} (Distance: {distance} meters):\n")
                     for dish, dish_info in filtered_dishes:
                         price = dish_info.get('Price', 'N/A')
                         text_widget.insert(tk.END, f"  {dish}, Price: {price}\n")
-                
-        #display_button = Button(root, text="Display Menus", command=display_menus)
-        #display_button.grid(row=len(diets)//3+5, column=0, columnspan=6)
+
+        display_button = Button(root, text="Display Menus", command=display_menus)
+        display_button.grid(row=len(diets)//3+5, column=0, columnspan=6)
 
         root.mainloop()
     
