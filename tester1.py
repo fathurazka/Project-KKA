@@ -185,7 +185,6 @@ class RestaurantGraph:
                         price = dish_info.get('Price', 'N/A')
                         text_widget.insert(tk.END, f"  {dish}, Price: {price}\n")
 
-        display_button = Button(root, text="Display Menus", command=display_menus)
         display_button.grid(row=len(diets)//3+5, column=0, columnspan=6)
 
         root.mainloop()
